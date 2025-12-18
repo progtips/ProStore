@@ -82,7 +82,25 @@ ProStore/
 1. Подключите репозиторий к Vercel
 2. В настройках проекта добавьте переменную окружения:
    - `DATABASE_URL` - ваш connection string от Neon
-3. Vercel автоматически выполнит `npm run build`, который включает `prisma generate`
+3. **ВАЖНО**: После деплоя необходимо создать таблицу в базе данных:
+   
+   **Вариант 1: Через Neon Dashboard (рекомендуется)**
+   1. Откройте Neon Dashboard → ваш проект → SQL Editor
+   2. Выполните SQL из файла `prisma/migrations/init.sql`:
+   ```sql
+   CREATE TABLE IF NOT EXISTS "notes" (
+       "id" TEXT NOT NULL,
+       "title" TEXT NOT NULL,
+       "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+       CONSTRAINT "notes_pkey" PRIMARY KEY ("id")
+   );
+   ```
+   
+   **Вариант 2: Через Prisma Migrate (локально)**
+   1. Используйте прямой connection string (не pooler) в `.env`
+   2. Выполните: `npm run db:migrate`
+   3. При запросе имени миграции введите: `init`
+4. Vercel автоматически выполнит `npm run build`, который включает `prisma generate`
 
 ## Полезные команды
 
