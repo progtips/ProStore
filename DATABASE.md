@@ -1,5 +1,6 @@
 ## Что есть в системе (сущности):
 
+Note - заметки
 User — владелец промтов, автор, голосующий
 Prompt — сам промт (может быть приватным или публичным)
 Tag — метки (многие-ко-многим с Prompt)
@@ -14,6 +15,7 @@ Vote — голос пользователя за публичный промт 
 - Голос уникален: (userId, promptId) — уникальный индекс
 
 ## Схема базы данных
+- Note: id, ownerId -> User, title, createdAt
 - User: id (cuid), email unique, name optional, createdAt
 - Prompt: id, ownerId -> User, title, content, description optional, categoryId -> Category,
   visibility (PRIVATE|PUBLIC, default PRIVATE), createdAt, updatedAt, publishedAt nullable
