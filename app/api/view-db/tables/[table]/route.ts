@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPrismaClient, getModelName } from '@/lib/db-manager'
-import { Prisma } from '@prisma/client'
 
 export async function GET(
   request: NextRequest,
@@ -14,16 +13,16 @@ export async function GET(
 
     const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table) as keyof Prisma.Delegate
+    const modelName = getModelName(resolvedParams.table)
 
-    if (!prisma[modelName]) {
+    // Проверяем наличие модели в Prisma Client
+    const model = (prisma as any)[modelName]
+    if (!model) {
       return NextResponse.json(
         { error: `Модель ${modelName} не найдена` },
         { status: 404 }
       )
     }
-
-    const model = prisma[modelName] as any
 
     // Получаем общее количество записей
     const total = await model.count()
@@ -82,16 +81,16 @@ export async function POST(
 
     const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table) as keyof Prisma.Delegate
+    const modelName = getModelName(resolvedParams.table)
 
-    if (!prisma[modelName]) {
+    // Проверяем наличие модели в Prisma Client
+    const model = (prisma as any)[modelName]
+    if (!model) {
       return NextResponse.json(
         { error: `Модель ${modelName} не найдена` },
         { status: 404 }
       )
     }
-
-    const model = prisma[modelName] as any
     const result = await model.create({ data: body })
 
     return NextResponse.json({ success: true, data: result })
@@ -123,16 +122,16 @@ export async function PUT(
 
     const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table) as keyof Prisma.Delegate
+    const modelName = getModelName(resolvedParams.table)
 
-    if (!prisma[modelName]) {
+    // Проверяем наличие модели в Prisma Client
+    const model = (prisma as any)[modelName]
+    if (!model) {
       return NextResponse.json(
         { error: `Модель ${modelName} не найдена` },
         { status: 404 }
       )
     }
-
-    const model = prisma[modelName] as any
     const result = await model.update({
       where: { id },
       data,
@@ -166,16 +165,16 @@ export async function DELETE(
 
     const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table) as keyof Prisma.Delegate
+    const modelName = getModelName(resolvedParams.table)
 
-    if (!prisma[modelName]) {
+    // Проверяем наличие модели в Prisma Client
+    const model = (prisma as any)[modelName]
+    if (!model) {
       return NextResponse.json(
         { error: `Модель ${modelName} не найдена` },
         { status: 404 }
       )
     }
-
-    const model = prisma[modelName] as any
     await model.delete({ where: { id } })
 
     return NextResponse.json({ success: true })
