@@ -12,7 +12,8 @@ export default async function MyPromptsPage() {
   }
 
   // Получаем промты текущего пользователя
-  const prompts = await prisma.prompt.findMany({
+  // Используем явное приведение типа для совместимости с Vercel build
+  const prompts = await (prisma as any).prompt.findMany({
     where: {
       ownerId: session.user.id,
     },
