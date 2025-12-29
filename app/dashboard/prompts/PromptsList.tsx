@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PromptCard } from './PromptCard'
 import { PromptsTable } from './PromptsTable'
 import { deletePrompt } from '@/app/actions/prompts'
@@ -34,6 +34,11 @@ export function PromptsList({ prompts: initialPrompts }: PromptsListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
   const router = useRouter()
+
+  // Синхронизируем состояние с пропсами при их изменении
+  useEffect(() => {
+    setPrompts(initialPrompts)
+  }, [initialPrompts])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Вы уверены, что хотите удалить этот промт?')) {

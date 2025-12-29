@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { createPrompt } from '@/app/actions/prompts'
 import { useRouter } from 'next/navigation'
 
@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 export function CreatePromptDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,7 +26,11 @@ export function CreatePromptDialog() {
       setIsOpen(false)
       // Сброс формы
       form.reset()
-      router.refresh()
+      
+      // Обновляем страницу через transition для плавного обновления
+      startTransition(() => {
+        router.refresh()
+      })
     } else {
       alert(result.error || 'Ошибка при создании промта')
     }
