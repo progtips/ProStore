@@ -29,7 +29,6 @@ interface PromptsListProps {
 export function PromptsList({ prompts: initialPrompts }: PromptsListProps) {
   const [prompts, setPrompts] = useState(initialPrompts)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   const handleDelete = async (id: string) => {

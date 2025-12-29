@@ -16,14 +16,16 @@ export function CreatePromptDialog() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const formData = new FormData(e.currentTarget)
+    // Сохраняем ссылку на форму до асинхронной операции
+    const form = e.currentTarget
+    const formData = new FormData(form)
     const result = await createPrompt(formData)
 
     if (result.success) {
       setIsOpen(false)
-      router.refresh()
       // Сброс формы
-      e.currentTarget.reset()
+      form.reset()
+      router.refresh()
     } else {
       alert(result.error || 'Ошибка при создании промта')
     }
