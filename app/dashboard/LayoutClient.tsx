@@ -4,31 +4,35 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 /**
- * Клиентский компонент для подсветки активного пункта меню
+ * Компонент ссылки меню с подсветкой активного состояния и иконкой
  */
-export function LayoutClient({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-
-  return <>{children}</>
-}
-
-/**
- * Компонент ссылки меню с подсветкой активного состояния
- */
-export function MenuLink({ href, children }: { href: string; children: React.ReactNode }) {
+export function MenuLink({ 
+  href, 
+  children, 
+  icon 
+}: { 
+  href: string
+  children: React.ReactNode
+  icon?: React.ReactNode
+}) {
   const pathname = usePathname()
   const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
 
   return (
     <Link
       href={href}
-      className={`block px-4 py-2 rounded-lg transition-colors ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
         isActive
-          ? 'bg-blue-50 text-blue-700 font-semibold'
-          : 'text-gray-700 hover:bg-gray-100'
+          ? 'bg-blue-100 text-blue-700 font-semibold'
+          : 'text-gray-700 hover:bg-blue-50'
       }`}
     >
-      {children}
+      {icon && (
+        <span className={isActive ? 'text-blue-600' : 'text-gray-500'}>
+          {icon}
+        </span>
+      )}
+      <span>{children}</span>
     </Link>
   )
 }
