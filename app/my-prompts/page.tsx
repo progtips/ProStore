@@ -7,8 +7,9 @@ import { signOut } from '@/auth'
 export default async function MyPromptsPage() {
   const session = await auth()
 
+  // Проверка авторизации в server component
   if (!session?.user?.id) {
-    redirect('/login')
+    redirect('/login?callbackUrl=/my-prompts')
   }
 
   // Получаем промты текущего пользователя

@@ -3,12 +3,15 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { signOut } from '@/auth'
 
+/**
+ * Защищенная страница - проверка авторизации в server component
+ */
 export default async function DashboardPage() {
   const session = await auth()
 
-  // Middleware уже защищает этот маршрут, но проверяем на всякий случай
+  // Проверка авторизации в server component (не в middleware)
   if (!session?.user) {
-    redirect('/login')
+    redirect('/login?callbackUrl=/dashboard')
   }
 
   return (
