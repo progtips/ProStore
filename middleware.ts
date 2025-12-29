@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const session = await auth()
+    const session = await auth(request)
 
     // Защищенные маршруты
     const protectedRoutes = ['/dashboard', '/my-prompts']
