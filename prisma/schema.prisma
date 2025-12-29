@@ -92,6 +92,10 @@ model Prompt {
   title       String
   content     String
   description String?
+  /// Флаг публичности промта (дублирует Visibility, удобен для фильтрации)
+  isPublic    Boolean     @default(false)
+  /// Флаг избранного промта для владельца
+  isFavorite  Boolean     @default(false)
   visibility  Visibility  @default(PRIVATE)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
