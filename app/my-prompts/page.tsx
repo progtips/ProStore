@@ -97,7 +97,7 @@ export default async function MyPromptsPage() {
           </div>
         ) : (
           <div className="grid gap-4">
-            {prompts.map((prompt) => (
+            {prompts.map((prompt: any) => (
               <div
                 key={prompt.id}
                 className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
@@ -131,7 +131,7 @@ export default async function MyPromptsPage() {
 
                 {prompt.tags.length > 0 && (
                   <div className="flex gap-2 mt-3">
-                    {prompt.tags.map((tag) => (
+                    {prompt.tags.map((tag: any) => (
                       <span
                         key={tag.id}
                         className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm"
