@@ -93,3 +93,4 @@ NEXTAUTH_URL=http://localhost:3000
 3. Проверьте, что `AUTH_SECRET` правильно установлен
 4. Попробуйте пересоздать OAuth приложение в Google Cloud Console
 
+
