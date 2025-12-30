@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ThumbsUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -23,7 +23,17 @@ export function LikeButton({
   const [liked, setLiked] = useState(initialLiked)
   const [count, setCount] = useState(initialCount)
   const [isLoading, setIsLoading] = useState(false)
+  const [justUpdated, setJustUpdated] = useState(false)
   const router = useRouter()
+
+  // Синхронизируем состояние с пропсами при их изменении
+  // Но не сбрасываем, если мы только что обновили состояние из ответа сервера
+  useEffect(() => {
+    if (!justUpdated) {
+      setLiked(initialLiked)
+      setCount(initialCount)
+    }
+  }, [initialLiked, initialCount, justUpdated])
 
   const handleLike = async () => {
     if (isLoading || disabled) return
@@ -32,7 +42,7 @@ export function LikeButton({
     const previousLiked = liked
     const previousCount = count
     const newLiked = !liked
-    const newCount = newLiked ? count + 1 : count - 1
+    const newCount = newLiked ? count + 1 : Math.max(0, count - 1)
 
     setLiked(newLiked)
     setCount(newCount)
@@ -66,9 +76,15 @@ export function LikeButton({
       // Обновляем состояние на основе ответа сервера
       setLiked(data.liked)
       setCount(data.likesCount)
+      setJustUpdated(true)
       
       // Обновляем страницу для синхронизации данных
       router.refresh()
+      
+      // Сбрасываем флаг через небольшую задержку, чтобы useEffect мог синхронизироваться с новыми данными
+      setTimeout(() => {
+        setJustUpdated(false)
+      }, 500)
     } catch (error) {
       // Откатываем оптимистичное обновление при ошибке
       setLiked(previousLiked)
