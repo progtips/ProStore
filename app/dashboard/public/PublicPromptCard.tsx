@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { LikeButton } from '../prompts/LikeButton'
-import { Globe } from 'lucide-react'
+import { Globe, Lock, Copy } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { togglePromptFavorite } from '@/app/actions/prompts'
 
@@ -66,11 +66,12 @@ export function PublicPromptCard({
   return (
     <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200">
       {/* Заголовок */}
-      <div className="flex justify-between items-start mb-3" title="Публичный промт">
+      <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-800 flex-1 pr-2">
           {prompt.title}
         </h3>
         <div className="flex gap-2">
+          <Globe className="w-5 h-5 text-green-500" title="Публичный промт" />
           {isAuthenticated && prompt.ownerId && (
             <button
               onClick={handleToggleFavorite}
@@ -97,7 +98,6 @@ export function PublicPromptCard({
               </svg>
             </button>
           )}
-          <Globe className="w-5 h-5 text-green-500" />
         </div>
       </div>
 
@@ -114,15 +114,26 @@ export function PublicPromptCard({
       </div>
 
       {/* Метаданные */}
-      <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-        {prompt.category && (
-          <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
-            {prompt.category.category}
+      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+        <div className="flex items-center gap-4">
+          {prompt.category && (
+            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
+              {prompt.category.category}
+            </span>
+          )}
+          <span>
+            {new Date(prompt.createdAt).toLocaleDateString('ru-RU')}
           </span>
-        )}
-        <span>
-          {new Date(prompt.createdAt).toLocaleDateString('ru-RU')}
-        </span>
+        </div>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(prompt.content)
+          }}
+          className="p-1.5 rounded transition-colors text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+          title="Копировать содержимое промта"
+        >
+          <Copy className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Теги */}
