@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'ProStore - Мои заметки',
-  description: 'Приложение для управления заметками',
+  title: 'ProStore - Каталог промтов',
+  description: 'Каталог лучших промтов для ваших задач',
 }
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   )
 }
