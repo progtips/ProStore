@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ThumbsUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -23,17 +23,17 @@ export function LikeButton({
   const [liked, setLiked] = useState(initialLiked)
   const [count, setCount] = useState(initialCount)
   const [isLoading, setIsLoading] = useState(false)
-  const [justUpdated, setJustUpdated] = useState(false)
   const router = useRouter()
+  const prevPromptIdRef = useRef(promptId)
 
-  // Синхронизируем состояние с пропсами при их изменении
-  // Но не сбрасываем, если мы только что обновили состояние из ответа сервера
+  // Синхронизируем состояние с пропсами только при смене промта
   useEffect(() => {
-    if (!justUpdated) {
+    if (prevPromptIdRef.current !== promptId) {
+      prevPromptIdRef.current = promptId
       setLiked(initialLiked)
       setCount(initialCount)
     }
-  }, [initialLiked, initialCount, justUpdated])
+  }, [promptId, initialLiked, initialCount])
 
   const handleLike = async () => {
     if (isLoading || disabled) return
@@ -74,17 +74,9 @@ export function LikeButton({
 
       const data = await response.json()
       // Обновляем состояние на основе ответа сервера
+      // Это гарантирует, что счетчик всегда соответствует данным на сервере
       setLiked(data.liked)
       setCount(data.likesCount)
-      setJustUpdated(true)
-      
-      // Обновляем страницу для синхронизации данных
-      router.refresh()
-      
-      // Сбрасываем флаг через небольшую задержку, чтобы useEffect мог синхронизироваться с новыми данными
-      setTimeout(() => {
-        setJustUpdated(false)
-      }, 500)
     } catch (error) {
       // Откатываем оптимистичное обновление при ошибке
       setLiked(previousLiked)
