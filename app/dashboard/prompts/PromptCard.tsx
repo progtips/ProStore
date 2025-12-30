@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { togglePromptPublic, togglePromptFavorite } from '@/app/actions/prompts'
 import { EditPromptDialog } from './EditPromptDialog'
+import { Globe, Lock } from 'lucide-react'
 
 interface Prompt {
   id: string
@@ -132,13 +133,18 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
         <button
           onClick={() => handleTogglePublic()}
           disabled={isToggling}
-          className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
+          className={`p-2 rounded transition-colors ${
             isPublic
-              ? 'bg-green-100 text-green-700 hover:bg-green-200'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
+              ? 'text-green-600 hover:bg-green-100'
+              : 'text-gray-600 hover:bg-gray-100'
+          } disabled:opacity-50`}
+          title={isPublic ? 'Сделать приватным' : 'Сделать публичным'}
         >
-          {isPublic ? 'Публичный' : 'Приватный'}
+          {isPublic ? (
+            <Globe className="w-5 h-5" />
+          ) : (
+            <Lock className="w-5 h-5" />
+          )}
         </button>
         <button
           onClick={() => onDelete(prompt.id)}

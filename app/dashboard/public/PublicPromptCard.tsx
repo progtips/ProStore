@@ -89,7 +89,6 @@ export function PublicPromptCard({
             {prompt.category.category}
           </span>
         )}
-        <span>Голосов: {prompt._count.votes}</span>
         <span>
           {new Date(prompt.createdAt).toLocaleDateString('ru-RU')}
         </span>
