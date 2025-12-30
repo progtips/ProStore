@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { auth, signOut } from '@/auth'
 import { LogIn, LogOut } from 'lucide-react'
+import { Logo } from './Logo'
 
 /**
  * Header компонент с навигацией и кнопкой входа/выхода
@@ -14,9 +15,7 @@ export async function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Лого и навигация */}
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
-              ProStore
-            </Link>
+            <Logo />
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 href="/"
