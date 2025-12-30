@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { LikeButton } from '@/app/dashboard/prompts/LikeButton'
-import { Globe, User, Calendar } from 'lucide-react'
+import { Globe, Calendar } from 'lucide-react'
 
 interface Prompt {
   id: string
@@ -31,8 +31,12 @@ interface HomePromptCardProps {
  * Лайки доступны только авторизованным пользователям
  */
 export function HomePromptCard({ prompt, isAuthenticated }: HomePromptCardProps) {
+  const hasLikes = prompt.likesCount > 0
+  
   return (
-    <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200">
+    <div className={`rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200 ${
+      hasLikes ? 'bg-green-50' : 'bg-white'
+    }`}>
       {/* Заголовок */}
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-800 flex-1 pr-2">
@@ -55,12 +59,8 @@ export function HomePromptCard({ prompt, isAuthenticated }: HomePromptCardProps)
         <p className="text-sm text-gray-700 line-clamp-3">{prompt.content}</p>
       </div>
 
-      {/* Метаданные: автор и дата */}
+      {/* Метаданные: дата и категория */}
       <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-        <div className="flex items-center gap-1">
-          <User className="w-3 h-3" />
-          <span>{prompt.owner.name || 'Аноним'}</span>
-        </div>
         <div className="flex items-center gap-1">
           <Calendar className="w-3 h-3" />
           <span>{new Date(prompt.createdAt).toLocaleDateString('ru-RU')}</span>
