@@ -60,6 +60,22 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
         </h3>
         <div className="flex gap-2">
           <button
+            onClick={handleTogglePublic}
+            disabled={isToggling}
+            className={`p-1 rounded transition-colors ${
+              isPublic
+                ? 'text-green-600 hover:bg-green-100'
+                : 'text-gray-600 hover:bg-gray-100'
+            } disabled:opacity-50`}
+            title={isPublic ? 'Сделать приватным' : 'Сделать публичным'}
+          >
+            {isPublic ? (
+              <Globe className="w-5 h-5" />
+            ) : (
+              <Lock className="w-5 h-5" />
+            )}
+          </button>
+          <button
             onClick={handleToggleFavorite}
             disabled={isToggling}
             className={`p-1 rounded transition-colors ${
@@ -130,22 +146,6 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
       {/* Действия */}
       <div className="flex gap-2 pt-3 border-t">
         <EditPromptDialog prompt={prompt} />
-        <button
-          onClick={() => handleTogglePublic()}
-          disabled={isToggling}
-          className={`p-2 rounded transition-colors ${
-            isPublic
-              ? 'text-green-600 hover:bg-green-100'
-              : 'text-gray-600 hover:bg-gray-100'
-          } disabled:opacity-50`}
-          title={isPublic ? 'Сделать приватным' : 'Сделать публичным'}
-        >
-          {isPublic ? (
-            <Globe className="w-5 h-5" />
-          ) : (
-            <Lock className="w-5 h-5" />
-          )}
-        </button>
         <button
           onClick={() => onDelete(prompt.id)}
           disabled={isDeleting}

@@ -47,7 +47,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
+        className="px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
       >
         Правка
       </button>
