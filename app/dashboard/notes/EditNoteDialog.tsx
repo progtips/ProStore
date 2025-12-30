@@ -66,17 +66,14 @@ export function EditNoteDialog({ note }: EditNoteDialogProps) {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-1">
-                  Заголовок *
-                </label>
-                <input
-                  type="text"
+                <textarea
                   id="edit-title"
                   name="title"
                   required
                   maxLength={200}
+                  rows={6}
                   defaultValue={note.title}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y"
                 />
               </div>
 
