@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { togglePromptPublic, togglePromptFavorite } from '@/app/actions/prompts'
 import { EditPromptDialog } from './EditPromptDialog'
-import { Globe, Lock } from 'lucide-react'
+import { Globe, Lock, Copy } from 'lucide-react'
 
 interface Prompt {
   id: string
@@ -117,16 +117,28 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
       </div>
 
       {/* Метаданные */}
-      <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-        {prompt.category && (
-          <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
-            {prompt.category.category}
+      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+        <div className="flex items-center gap-4">
+          {prompt.category && (
+            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
+              {prompt.category.category}
+            </span>
+          )}
+          <span>Голосов: {prompt._count.votes}</span>
+          <span>
+            {new Date(prompt.updatedAt).toLocaleDateString('ru-RU')}
           </span>
-        )}
-        <span>Голосов: {prompt._count.votes}</span>
-        <span>
-          {new Date(prompt.updatedAt).toLocaleDateString('ru-RU')}
-        </span>
+        </div>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(prompt.content)
+            // Можно добавить уведомление о копировании
+          }}
+          className="p-1.5 rounded transition-colors text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+          title="Копировать содержимое промта"
+        >
+          <Copy className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Теги */}
@@ -144,7 +156,7 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
       )}
 
       {/* Действия */}
-      <div className="flex gap-2 pt-3 border-t">
+      <div className="flex justify-between gap-2 pt-3 border-t">
         <EditPromptDialog prompt={prompt} />
         <button
           onClick={() => onDelete(prompt.id)}

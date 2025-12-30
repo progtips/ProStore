@@ -92,6 +92,8 @@ export default async function PublicPromptsPage({
     ...prompt,
     likedByMe: userLikes.has(prompt.id),
     likesCount: prompt._count.likes || 0,
+    isFavorite: prompt.isFavorite || false,
+    ownerId: prompt.ownerId,
   }))
 
   return (
