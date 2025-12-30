@@ -41,14 +41,14 @@ export function PublicPromptCard({
   return (
     <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200">
       {/* Заголовок */}
-      <div className="flex justify-between items-start mb-3">
+      <div className="flex justify-between items-start mb-3" title="Публичный промт">
         <div className="flex items-center gap-2 flex-1 pr-2">
           <MessageSquare className="w-5 h-5 text-blue-500" />
           <h3 className="text-lg font-semibold text-gray-800">
             {prompt.title}
           </h3>
         </div>
-        <Globe className="w-5 h-5 text-green-500" title="Публичный промт" />
+        <Globe className="w-5 h-5 text-green-500" />
       </div>
 
       {/* Автор */}
