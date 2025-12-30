@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { togglePromptPublic, togglePromptFavorite } from '@/app/actions/prompts'
 import { EditPromptDialog } from './EditPromptDialog'
 import { Globe, Lock, Copy } from 'lucide-react'
+import { Toast } from '@/components/ui/Toast'
 
 interface Prompt {
   id: string
@@ -32,6 +33,7 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
   const [isPublic, setIsPublic] = useState(prompt.isPublic)
   const [isFavorite, setIsFavorite] = useState(prompt.isFavorite)
   const [isToggling, setIsToggling] = useState(false)
+  const [showToast, setShowToast] = useState(false)
 
   const handleTogglePublic = async () => {
     setIsToggling(true)
@@ -130,9 +132,13 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
           </span>
         </div>
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(prompt.content)
-            // Можно добавить уведомление о копировании
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(prompt.content)
+              setShowToast(true)
+            } catch (error) {
+              console.error('Ошибка копирования:', error)
+            }
           }}
           className="p-1.5 rounded transition-colors text-gray-500 hover:text-gray-700 hover:bg-gray-100"
           title="Копировать содержимое промта"
@@ -166,6 +172,13 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
           {isDeleting ? '...' : 'Удалить'}
         </button>
       </div>
+
+      {/* Уведомление о копировании */}
+      <Toast
+        message="Промт скопирован"
+        show={showToast}
+        onClose={() => setShowToast(false)}
+      />
     </div>
   )
 }

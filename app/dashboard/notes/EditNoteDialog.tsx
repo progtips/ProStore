@@ -1,13 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import { createNote } from '@/app/actions/notes'
+import { updateNote } from '@/app/actions/notes'
 import { useRouter } from 'next/navigation'
 
+interface Note {
+  id: string
+  title: string
+}
+
+interface EditNoteDialogProps {
+  note: Note
+}
+
 /**
- * Диалог создания новой заметки
+ * Диалог редактирования заметки
  */
-export function CreateNoteDialog() {
+export function EditNoteDialog({ note }: EditNoteDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
@@ -16,16 +25,16 @@ export function CreateNoteDialog() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const form = e.currentTarget
-    const formData = new FormData(form)
-    const result = await createNote(formData)
+    const formData = new FormData(e.currentTarget)
+    formData.append('id', note.id)
+    
+    const result = await updateNote(formData)
 
     if (result.success) {
       setIsOpen(false)
-      form.reset()
       router.refresh()
     } else {
-      alert(result.error || 'Ошибка при создании заметки')
+      alert(result.error || 'Ошибка при обновлении заметки')
     }
 
     setIsSubmitting(false)
@@ -35,16 +44,16 @@ export function CreateNoteDialog() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+        className="px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
       >
-        + Создать заметку
+        Правка
       </button>
 
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Создать заметку</h2>
+              <h2 className="text-2xl font-bold text-gray-800">Правка заметки</h2>
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -55,18 +64,21 @@ export function CreateNoteDialog() {
               </button>
             </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div>
-                        <input
-                          type="text"
-                          id="title"
-                          name="title"
-                          required
-                          maxLength={200}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Введите заметку"
-                        />
-                      </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-1">
+                  Заголовок *
+                </label>
+                <input
+                  type="text"
+                  id="edit-title"
+                  name="title"
+                  required
+                  maxLength={200}
+                  defaultValue={note.title}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
 
               <div className="flex gap-3 pt-4">
                 <button
@@ -74,7 +86,7 @@ export function CreateNoteDialog() {
                   disabled={isSubmitting}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Создание...' : 'Создать'}
+                  {isSubmitting ? 'Сохранение...' : 'Сохранить'}
                 </button>
                 <button
                   type="button"

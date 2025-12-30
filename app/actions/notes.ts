@@ -35,6 +35,55 @@ export async function createNote(formData: FormData) {
 }
 
 /**
+ * Обновляет заметку
+ */
+export async function updateNote(formData: FormData) {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: 'Не авторизован' }
+  }
+
+  const id = formData.get('id') as string
+  const title = formData.get('title') as string
+
+  if (!id) {
+    return { success: false, error: 'ID обязателен' }
+  }
+
+  if (!title || title.trim().length === 0) {
+    return { success: false, error: 'Заголовок обязателен' }
+  }
+
+  try {
+    // Проверка прав доступа
+    const existingNote = await (prisma as any).note.findUnique({
+      where: { id },
+      select: { ownerId: true },
+    })
+
+    if (!existingNote) {
+      return { success: false, error: 'Заметка не найдена' }
+    }
+
+    if (existingNote.ownerId !== session.user.id) {
+      return { success: false, error: 'Нет прав для редактирования этой заметки' }
+    }
+
+    await (prisma as any).note.update({
+      where: { id },
+      data: {
+        title: title.trim(),
+      },
+    })
+    revalidatePath('/dashboard/notes')
+    return { success: true }
+  } catch (error: any) {
+    console.error('Ошибка обновления заметки:', error)
+    return { success: false, error: error.message || 'Не удалось обновить заметку' }
+  }
+}
+
+/**
  * Удаляет заметку
  */
 export async function deleteNote(id: string) {

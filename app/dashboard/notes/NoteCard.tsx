@@ -1,6 +1,7 @@
 'use client'
 
 import { FileText } from 'lucide-react'
+import { EditNoteDialog } from './EditNoteDialog'
 
 interface Note {
   id: string
@@ -36,7 +37,8 @@ export function NoteCard({ note, onDelete, isDeleting }: NoteCardProps) {
       </div>
 
       {/* Действия */}
-      <div className="flex justify-end gap-2 pt-3 border-t">
+      <div className="flex justify-between gap-2 pt-3 border-t">
+        <EditNoteDialog note={note} />
         <button
           onClick={() => onDelete(note.id)}
           disabled={isDeleting}
