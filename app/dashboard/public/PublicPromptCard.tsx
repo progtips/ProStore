@@ -71,7 +71,9 @@ export function PublicPromptCard({
           {prompt.title}
         </h3>
         <div className="flex gap-2">
-          <Globe className="w-5 h-5 text-green-500" title="Публичный промт" />
+          <div title="Публичный промт">
+            <Globe className="w-5 h-5 text-green-500" />
+          </div>
           {isAuthenticated && prompt.ownerId && (
             <button
               onClick={handleToggleFavorite}
