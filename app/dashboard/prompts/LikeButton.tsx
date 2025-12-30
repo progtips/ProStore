@@ -78,6 +78,9 @@ export function LikeButton({
       // Это гарантирует, что счетчик всегда соответствует данным на сервере
       setLiked(data.liked)
       setCount(data.likesCount)
+      
+      // Обновляем страницу для синхронизации всех данных (включая голоса)
+      router.refresh()
     } catch (error) {
       // Откатываем оптимистичное обновление при ошибке
       setLiked(previousLiked)

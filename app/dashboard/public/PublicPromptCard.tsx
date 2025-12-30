@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { LikeButton } from '../prompts/LikeButton'
 import { MessageSquare, Globe } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -33,10 +34,16 @@ interface PublicPromptCardProps {
  * Карточка публичного промта с кнопкой лайка
  */
 export function PublicPromptCard({
-  prompt,
+  prompt: initialPrompt,
   isAuthenticated,
 }: PublicPromptCardProps) {
   const router = useRouter()
+  const [prompt, setPrompt] = useState(initialPrompt)
+
+  // Синхронизируем состояние с пропсами при их изменении
+  useEffect(() => {
+    setPrompt(initialPrompt)
+  }, [initialPrompt])
 
   return (
     <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200">
