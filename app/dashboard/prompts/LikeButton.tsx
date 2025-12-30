@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Heart } from 'lucide-react'
+import { ThumbsUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface LikeButtonProps {
@@ -86,13 +86,13 @@ export function LikeButton({
       disabled={isLoading || disabled}
       className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
         liked
-          ? 'bg-red-100 text-red-600 hover:bg-red-200'
+          ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
       title={liked ? 'Убрать лайк' : 'Поставить лайк'}
     >
-      <Heart
-        className={`w-5 h-5 ${liked ? 'fill-current' : ''}`}
+      <ThumbsUp
+        className={`w-5 h-5 ${count > 0 ? 'text-yellow-500' : ''} ${liked ? 'fill-current' : ''}`}
         strokeWidth={2}
       />
       <span className="text-sm font-medium">{count}</span>
