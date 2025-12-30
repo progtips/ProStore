@@ -23,6 +23,7 @@ model User {
   notes    Note[]
   prompts  Prompt[]
   votes    Vote[]
+  likes    Like[]
 
   @@map("users")
 }
@@ -107,6 +108,7 @@ model Prompt {
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   tags     Tag[]
   votes    Vote[]
+  likes    Like[]
 
   @@index([ownerId, updatedAt])
   @@index([visibility, createdAt])
@@ -137,6 +139,21 @@ model Vote {
   @@index([promptId])
   @@index([userId])
   @@map("votes")
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  promptId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, promptId])
+  @@index([promptId])
+  @@index([userId])
+  @@map("likes")
 }
 
 enum Visibility {
