@@ -25,6 +25,7 @@ export function LikeButton({
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const prevPromptIdRef = useRef(promptId)
+  const isInitialMount = useRef(true)
 
   // Синхронизируем состояние с пропсами только при смене промта
   useEffect(() => {
@@ -33,7 +34,7 @@ export function LikeButton({
       setLiked(initialLiked)
       setCount(initialCount)
     }
-  }, [promptId, initialLiked, initialCount])
+  }, [promptId]) // Только при смене promptId, не при изменении пропсов
 
   const handleLike = async () => {
     if (isLoading || disabled) return
