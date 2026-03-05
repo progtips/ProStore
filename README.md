@@ -142,6 +142,18 @@ npm run db:seed      # Заполнение базы данных
 npm run db:studio    # Открыть Prisma Studio
 ```
 
+## GitHub Pages
+
+Страница-описание проекта доступна в папке `docs/` и готова к публикации на GitHub Pages.
+
+**Включение GitHub Pages:**
+1. Репозиторий → **Settings** → **Pages**
+2. **Source**: Deploy from a branch
+3. **Branch**: main (или master) → папка **/docs**
+4. Сохраните — страница будет доступна по адресу `https://<username>.github.io/ProStore/`
+
+Перед публикацией отредактируйте в `docs/index.html` переменную `GITHUB_REPO` (укажите `username/ProStore`) и при необходимости `APP_URL` (ссылка на приложение на Vercel).
+
 ## Решение проблем
 
 ### Ошибка подключения к базе данных
