@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { updatePrompt } from '@/app/actions/prompts'
 import { useRouter } from 'next/navigation'
 
@@ -22,16 +22,32 @@ interface EditPromptDialogProps {
 export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formData, setFormData] = useState({ title: '', description: '', content: '', isPublic: false })
   const router = useRouter()
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        title: prompt.title,
+        description: prompt.description || '',
+        content: prompt.content,
+        isPublic: prompt.isPublic,
+      })
+    }
+  }, [isOpen, prompt])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const formData = new FormData(e.currentTarget)
-    formData.append('id', prompt.id)
+    const formDataObj = new FormData()
+    formDataObj.append('id', prompt.id)
+    formDataObj.append('title', formData.title)
+    formDataObj.append('description', formData.description)
+    formDataObj.append('content', formData.content)
+    formDataObj.append('isPublic', formData.isPublic ? 'true' : '')
     
-    const result = await updatePrompt(formData)
+    const result = await updatePrompt(formDataObj)
 
     if (result.success) {
       setIsOpen(false)
@@ -53,13 +69,13 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="edit-dialog-panel rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto border">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Правка промта</h2>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Правка промта</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -69,7 +85,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   Заголовок *
                 </label>
                 <input
@@ -78,13 +94,14 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                   name="title"
                   required
                   maxLength={200}
-                  defaultValue={prompt.title}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={formData.title}
+                  onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label htmlFor="edit-description" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="edit-description" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   Описание
                 </label>
                 <input
@@ -92,13 +109,14 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                   id="edit-description"
                   name="description"
                   maxLength={500}
-                  defaultValue={prompt.description || ''}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={formData.description}
+                  onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label htmlFor="edit-content" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="edit-content" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   Содержимое *
                 </label>
                 <textarea
@@ -106,8 +124,9 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                   name="content"
                   required
                   rows={8}
-                  defaultValue={prompt.content}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={formData.content}
+                  onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
@@ -116,11 +135,11 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                   type="checkbox"
                   id="edit-isPublic"
                   name="isPublic"
-                  value="true"
-                  defaultChecked={prompt.isPublic}
+                  checked={formData.isPublic}
+                  onChange={(e) => setFormData((p) => ({ ...p, isPublic: e.target.checked }))}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="edit-isPublic" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="edit-isPublic" className="ml-2 text-sm text-gray-700 dark:text-slate-300">
                   Сделать публичным
                 </label>
               </div>
@@ -136,7 +155,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   Отмена
                 </button>

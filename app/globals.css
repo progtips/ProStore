@@ -82,3 +82,14 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* Панель диалога редактирования */
+.edit-dialog-panel {
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.theme-stitch .edit-dialog-panel {
+  background-color: #1e293b !important;
+  border-color: rgba(37, 37, 244, 0.3) !important;
+}
+
