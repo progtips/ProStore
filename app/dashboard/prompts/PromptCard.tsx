@@ -148,14 +148,14 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
       </div>
 
       {/* Теги */}
-      {prompt.tags.length > 0 && (
+      {prompt.tags && prompt.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3">
           {prompt.tags.map((tag) => (
             <span
               key={tag.name}
-              className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
+              className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-md text-xs font-medium"
             >
-              {tag.name}
+              #{tag.name}
             </span>
           ))}
         </div>

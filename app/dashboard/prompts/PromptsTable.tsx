@@ -93,6 +93,9 @@ export function PromptsTable({ prompts: initialPrompts }: PromptsTableProps) {
               Категория
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Теги
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Голосов
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -137,6 +140,22 @@ export function PromptsTable({ prompts: initialPrompts }: PromptsTableProps) {
                 ) : (
                   <span className="text-sm text-gray-400">—</span>
                 )}
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex flex-wrap gap-1">
+                  {prompt.tags && prompt.tags.length > 0 ? (
+                    prompt.tags.map((tag) => (
+                      <span
+                        key={tag.name}
+                        className="px-2 py-0.5 text-xs bg-blue-50 text-blue-700 rounded"
+                      >
+                        #{tag.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-sm text-gray-400">—</span>
+                  )}
+                </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {prompt._count.votes}
