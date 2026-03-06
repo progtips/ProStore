@@ -30,12 +30,20 @@ export async function Header() {
                 Каталог
               </Link>
               {session?.user && (
-                <Link
-                  href="/dashboard/prompts"
-                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
-                >
-                  Мои промты
-                </Link>
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  >
+                    Профиль
+                  </Link>
+                  <Link
+                    href="/dashboard/prompts"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  >
+                    Мои промты
+                  </Link>
+                </>
               )}
             </nav>
           </div>
@@ -44,16 +52,22 @@ export async function Header() {
           <div className="flex items-center gap-4">
             {session?.user ? (
               <>
-                {session.user.image && (
-                  <img
-                    src={session.user.image}
-                    alt={session.user.name || 'User'}
-                    className="w-8 h-8 rounded-full"
-                  />
-                )}
-                <span className="hidden sm:inline text-gray-700 text-sm">
-                  {session.user.name || session.user.email}
-                </span>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                  title="Перейти в профиль"
+                >
+                  {session.user.image && (
+                    <img
+                      src={session.user.image}
+                      alt={session.user.name || 'User'}
+                      className="w-8 h-8 rounded-full"
+                    />
+                  )}
+                  <span className="hidden sm:inline text-gray-700 text-sm">
+                    {session.user.name || session.user.email}
+                  </span>
+                </Link>
                 <form
                   action={async () => {
                     'use server'
