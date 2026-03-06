@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { updatePrompt } from '@/app/actions/prompts'
 import { useRouter } from 'next/navigation'
+import { TagsInput } from '@/components/prompts/TagsInput'
 
 interface Prompt {
   id: string
@@ -10,6 +11,7 @@ interface Prompt {
   content: string
   description: string | null
   isPublic: boolean
+  tags?: { name: string }[]
 }
 
 interface EditPromptDialogProps {
@@ -23,6 +25,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({ title: '', description: '', content: '', isPublic: false })
+  const [tags, setTags] = useState<string[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -33,6 +36,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
         content: prompt.content,
         isPublic: prompt.isPublic,
       })
+      setTags(prompt.tags?.map((t) => t.name) || [])
     }
   }, [isOpen, prompt])
 
@@ -46,6 +50,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
     formDataObj.append('description', formData.description)
     formDataObj.append('content', formData.content)
     formDataObj.append('isPublic', formData.isPublic ? 'true' : '')
+    formDataObj.append('tags', tags.join(','))
     
     const result = await updatePrompt(formDataObj)
 
@@ -128,6 +133,13 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                   onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
+                  Теги
+                </label>
+                <TagsInput value={tags} onChange={setTags} placeholder="Python, ChatGPT, Midjourney..." />
               </div>
 
               <div className="flex items-center">

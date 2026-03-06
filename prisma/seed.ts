@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding database...')
 
-  // Очистка существующих данных
+  // Очистка существующих данных (не удаляем пользователей и аккаунты)
   await prisma.note.deleteMany()
 
   // Создаем тестового пользователя, если его нет
@@ -31,8 +31,18 @@ async function main() {
       { title: 'Третья заметка', ownerId: testUser.id },
     ],
   })
-
   console.log(`✅ Created ${notes.count} notes`)
+
+  // Создание тегов (если не существуют)
+  const tagNames = ['Python', 'JavaScript', 'ChatGPT', 'Midjourney', 'Claude', 'Development', 'Marketing', 'Design']
+  for (const name of tagNames) {
+    await prisma.tag.upsert({
+      where: { name },
+      create: { name },
+      update: {},
+    })
+  }
+  console.log(`✅ Created/updated ${tagNames.length} tags`)
 }
 
 main()

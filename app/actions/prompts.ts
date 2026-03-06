@@ -6,6 +6,18 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 /**
+ * Парсинг тегов из FormData (поле "tags" — строка через запятую)
+ */
+function parseTagsFromFormData(formData: FormData): string[] {
+  const tagsRaw = formData.get('tags')
+  if (!tagsRaw || typeof tagsRaw !== 'string') return []
+  return tagsRaw
+    .split(',')
+    .map((t) => t.trim())
+    .filter((t) => t.length > 0)
+}
+
+/**
  * Создание нового промта
  */
 export async function createPrompt(formData: FormData) {
@@ -16,6 +28,7 @@ export async function createPrompt(formData: FormData) {
   }
 
   try {
+    const tagNames = parseTagsFromFormData(formData)
     const data = {
       title: formData.get('title') as string,
       content: formData.get('content') as string,
@@ -39,6 +52,12 @@ export async function createPrompt(formData: FormData) {
         isPublic: data.isPublic || false,
         ownerId: session.user.id,
         visibility: data.isPublic ? 'PUBLIC' : 'PRIVATE',
+        tags: {
+          connectOrCreate: tagNames.map((name: string) => ({
+            where: { name },
+            create: { name },
+          })),
+        },
       },
     })
 
@@ -79,6 +98,7 @@ export async function updatePrompt(formData: FormData) {
       return { success: false, error: 'Нет доступа к этому промту' }
     }
 
+    const tagNames = parseTagsFromFormData(formData)
     const data: any = {}
     if (formData.get('title')) data.title = formData.get('title') as string
     if (formData.get('content')) data.content = formData.get('content') as string
@@ -108,6 +128,21 @@ export async function updatePrompt(formData: FormData) {
     if (data.hasOwnProperty('isPublic')) {
       updateData.isPublic = data.isPublic
       updateData.visibility = data.isPublic ? 'PUBLIC' : 'PRIVATE'
+    }
+
+    // Обновление тегов: заменяем связь полностью
+    if (formData.has('tags')) {
+      const tagIds = await Promise.all(
+        tagNames.map(async (name: string) => {
+          const tag = await (prisma as any).tag.upsert({
+            where: { name },
+            create: { name },
+            update: {},
+          })
+          return tag.id
+        })
+      )
+      updateData.tags = { set: tagIds.map((tagId: string) => ({ id: tagId })) }
     }
 
     const prompt = await (prisma as any).prompt.update({
