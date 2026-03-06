@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -15,5 +17,68 @@
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* Тема Stitch (из stitch_prostore_concept_v2) */
+.theme-stitch {
+  --color-primary: #2525f4;
+  --color-primary-hover: #1e1ec4;
+  --color-bg-light: #f5f5f8;
+  --color-bg-dark: #101022;
+}
+
+.theme-stitch body {
+  background-color: #101022;
+  color: #f1f5f9;
+}
+
+.theme-stitch .glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-stitch .hero-gradient {
+  background: radial-gradient(circle at top left, rgba(37, 37, 244, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at bottom right, #101022 0%, #101022 100%);
+}
+
+/* Переопределение Tailwind для темы Stitch */
+.theme-stitch .bg-blue-600,
+.theme-stitch .bg-blue-500 {
+  background-color: #2525f4 !important;
+}
+.theme-stitch .bg-blue-50 {
+  background-color: rgba(37, 37, 244, 0.1) !important;
+}
+.theme-stitch .text-blue-600,
+.theme-stitch .hover\:text-blue-600:hover {
+  color: #2525f4 !important;
+}
+.theme-stitch .border-blue-200,
+.theme-stitch .border-blue-100 {
+  border-color: rgba(37, 37, 244, 0.3) !important;
+}
+.theme-stitch .bg-gray-50 {
+  background-color: #101022 !important;
+}
+.theme-stitch .bg-white {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+.theme-stitch .text-gray-800,
+.theme-stitch .text-gray-700,
+.theme-stitch .text-gray-900 {
+  color: #f1f5f9 !important;
+}
+.theme-stitch .text-gray-600 {
+  color: #94a3b8 !important;
+}
+.theme-stitch .border-gray-200,
+.theme-stitch .border-b {
+  border-color: rgba(37, 37, 244, 0.2) !important;
+}
+.theme-stitch .shadow,
+.theme-stitch .shadow-sm {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
