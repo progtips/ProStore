@@ -29,11 +29,15 @@ export async function createPrompt(formData: FormData) {
 
   try {
     const tagNames = parseTagsFromFormData(formData)
+    const categoryIdRaw = formData.get('categoryId')
+    const categoryId = categoryIdRaw && String(categoryIdRaw).trim() !== '' ? (categoryIdRaw as string) : null
+
     const data = {
       title: formData.get('title') as string,
       content: formData.get('content') as string,
       description: formData.get('description') as string || undefined,
       isPublic: formData.get('isPublic') === 'true',
+      categoryId,
     }
 
     // Валидация
@@ -52,6 +56,7 @@ export async function createPrompt(formData: FormData) {
         isPublic: data.isPublic || false,
         ownerId: session.user.id,
         visibility: data.isPublic ? 'PUBLIC' : 'PRIVATE',
+        categoryId: data.categoryId || null,
         tags: {
           connectOrCreate: tagNames.map((name: string) => ({
             where: { name },
@@ -109,6 +114,10 @@ export async function updatePrompt(formData: FormData) {
       data.isPublic = formData.get('isPublic') === 'true'
       data.visibility = data.isPublic ? 'PUBLIC' : 'PRIVATE'
     }
+    if (formData.has('categoryId')) {
+      const categoryIdRaw = formData.get('categoryId')
+      data.categoryId = categoryIdRaw && String(categoryIdRaw).trim() !== '' ? (categoryIdRaw as string) : null
+    }
 
     // Валидация
     if (data.title && data.title.trim().length === 0) {
@@ -128,6 +137,9 @@ export async function updatePrompt(formData: FormData) {
     if (data.hasOwnProperty('isPublic')) {
       updateData.isPublic = data.isPublic
       updateData.visibility = data.isPublic ? 'PUBLIC' : 'PRIVATE'
+    }
+    if (data.hasOwnProperty('categoryId')) {
+      updateData.categoryId = data.categoryId
     }
 
     // Обновление тегов: заменяем связь полностью

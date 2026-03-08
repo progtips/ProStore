@@ -15,19 +15,25 @@ interface Prompt {
   isFavorite: boolean
   createdAt: Date
   updatedAt: Date
-  category: { category: string } | null
+  category: { id: string; category: string } | null
   tags: { name: string }[]
   _count: { votes: number }
 }
 
+interface Category {
+  id: string
+  category: string
+}
+
 interface PromptsTableProps {
   prompts: Prompt[]
+  categories: Category[]
 }
 
 /**
  * Таблица промтов
  */
-export function PromptsTable({ prompts: initialPrompts }: PromptsTableProps) {
+export function PromptsTable({ prompts: initialPrompts, categories }: PromptsTableProps) {
   const [prompts, setPrompts] = useState(initialPrompts)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [togglingId, setTogglingId] = useState<string | null>(null)
@@ -178,7 +184,7 @@ export function PromptsTable({ prompts: initialPrompts }: PromptsTableProps) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end gap-2">
-                  <EditPromptDialog prompt={prompt} />
+                  <EditPromptDialog prompt={prompt} categories={categories} />
                   <button
                     onClick={() => handleDelete(prompt.id)}
                     disabled={deletingId === prompt.id}

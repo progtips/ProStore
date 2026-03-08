@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { getCategories } from '@/app/actions/categories'
 import { PromptsList } from './PromptsList'
 import { CreatePromptDialog } from './CreatePromptDialog'
 
@@ -14,33 +15,35 @@ export default async function PromptsPage() {
     redirect('/login?callbackUrl=/dashboard/prompts')
   }
 
-  // Получаем промты текущего пользователя
-  const prompts = await (prisma as any).prompt.findMany({
-    where: {
-      ownerId: session.user.id,
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
-    include: {
-      category: true,
-      tags: true,
-      _count: {
-        select: {
-          votes: true,
+  const [prompts, categories] = await Promise.all([
+    (prisma as any).prompt.findMany({
+      where: {
+        ownerId: session.user.id,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+      include: {
+        category: true,
+        tags: true,
+        _count: {
+          select: {
+            votes: true,
+          },
         },
       },
-    },
-  })
+    }),
+    getCategories(),
+  ])
 
   return (
     <div className="max-w-7xl">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Мои промты</h1>
-        <CreatePromptDialog />
+        <CreatePromptDialog categories={categories} />
       </div>
 
-      <PromptsList prompts={prompts} />
+      <PromptsList prompts={prompts} categories={categories} />
     </div>
   )
 }

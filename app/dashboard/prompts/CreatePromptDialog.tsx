@@ -5,18 +5,31 @@ import { createPrompt } from '@/app/actions/prompts'
 import { useRouter } from 'next/navigation'
 import { TagsInput } from '@/components/prompts/TagsInput'
 
+interface Category {
+  id: string
+  category: string
+}
+
+interface CreatePromptDialogProps {
+  categories: Category[]
+}
+
 /**
  * Диалог создания нового промта
  */
-export function CreatePromptDialog() {
+export function CreatePromptDialog({ categories }: CreatePromptDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [tags, setTags] = useState<string[]>([])
+  const [categoryId, setCategoryId] = useState<string>('')
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   useEffect(() => {
-    if (isOpen) setTags([])
+    if (isOpen) {
+      setTags([])
+      setCategoryId('')
+    }
   }, [isOpen])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,6 +38,7 @@ export function CreatePromptDialog() {
 
     const form = e.currentTarget
     const formData = new FormData(form)
+    if (categoryId) formData.set('categoryId', categoryId)
     // Теги передаются через TagsInput (hidden input name="tags")
     const result = await createPrompt(formData)
 
@@ -108,6 +122,25 @@ export function CreatePromptDialog() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Введите содержимое промта"
                 />
+              </div>
+
+              <div>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+                  Категория
+                </label>
+                <select
+                  id="category"
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Без категории</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.category}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

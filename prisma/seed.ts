@@ -43,6 +43,17 @@ async function main() {
     })
   }
   console.log(`✅ Created/updated ${tagNames.length} tags`)
+
+  // Создание категорий (если не существуют)
+  const categoryNames = ['Development', 'Midjourney', 'ChatGPT', 'Marketing', 'Design', 'Claude', 'Python', 'JavaScript']
+  for (const name of categoryNames) {
+    await prisma.category.upsert({
+      where: { category: name },
+      create: { category: name },
+      update: {},
+    })
+  }
+  console.log(`✅ Created/updated ${categoryNames.length} categories`)
 }
 
 main()

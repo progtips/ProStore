@@ -11,20 +11,27 @@ interface Prompt {
   content: string
   description: string | null
   isPublic: boolean
+  category?: { id: string; category: string } | null
   tags?: { name: string }[]
+}
+
+interface Category {
+  id: string
+  category: string
 }
 
 interface EditPromptDialogProps {
   prompt: Prompt
+  categories: Category[]
 }
 
 /**
  * Диалог редактирования промта
  */
-export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
+export function EditPromptDialog({ prompt, categories }: EditPromptDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData] = useState({ title: '', description: '', content: '', isPublic: false })
+  const [formData, setFormData] = useState({ title: '', description: '', content: '', isPublic: false, categoryId: '' })
   const [tags, setTags] = useState<string[]>([])
   const router = useRouter()
 
@@ -35,6 +42,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
         description: prompt.description || '',
         content: prompt.content,
         isPublic: prompt.isPublic,
+        categoryId: prompt.category?.id || '',
       })
       setTags(prompt.tags?.map((t) => t.name) || [])
     }
@@ -51,6 +59,7 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
     formDataObj.append('content', formData.content)
     formDataObj.append('isPublic', formData.isPublic ? 'true' : '')
     formDataObj.append('tags', tags.join(','))
+    formDataObj.append('categoryId', formData.categoryId)
     
     const result = await updatePrompt(formDataObj)
 
@@ -133,6 +142,25 @@ export function EditPromptDialog({ prompt }: EditPromptDialogProps) {
                   onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+              </div>
+
+              <div>
+                <label htmlFor="edit-category" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
+                  Категория
+                </label>
+                <select
+                  id="edit-category"
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData((p) => ({ ...p, categoryId: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Без категории</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.category}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

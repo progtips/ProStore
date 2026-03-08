@@ -15,13 +15,19 @@ interface Prompt {
   isFavorite: boolean
   createdAt: Date
   updatedAt: Date
-  category: { category: string } | null
+  category: { id: string; category: string } | null
   tags: { name: string }[]
   _count: { votes: number }
 }
 
+interface Category {
+  id: string
+  category: string
+}
+
 interface PromptCardProps {
   prompt: Prompt
+  categories: Category[]
   onDelete: (id: string) => void
   isDeleting: boolean
 }
@@ -29,7 +35,7 @@ interface PromptCardProps {
 /**
  * Карточка промта
  */
-export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
+export function PromptCard({ prompt, categories, onDelete, isDeleting }: PromptCardProps) {
   const [isPublic, setIsPublic] = useState(prompt.isPublic)
   const [isFavorite, setIsFavorite] = useState(prompt.isFavorite)
   const [isToggling, setIsToggling] = useState(false)
@@ -163,7 +169,7 @@ export function PromptCard({ prompt, onDelete, isDeleting }: PromptCardProps) {
 
       {/* Действия */}
       <div className="flex justify-between gap-2 pt-3 border-t">
-        <EditPromptDialog prompt={prompt} />
+        <EditPromptDialog prompt={prompt} categories={categories} />
         <button
           onClick={() => onDelete(prompt.id)}
           disabled={isDeleting}

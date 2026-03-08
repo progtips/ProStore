@@ -1,7 +1,11 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { getPrismaClient, getModelName } from '@/lib/db-manager'
+
+/** Таблицы, редактирование которых разрешено только администраторам */
+const ADMIN_ONLY_TABLES = ['categories']
 
 export async function GET(
   request: NextRequest,
@@ -72,18 +76,37 @@ export async function GET(
   }
 }
 
+async function requireAdminForTable(tableName: string): Promise<NextResponse | null> {
+  if (!ADMIN_ONLY_TABLES.includes(tableName)) return null
+  const session = await auth()
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Требуется авторизация' }, { status: 401 })
+  }
+  if (session.user.role !== 'admin') {
+    return NextResponse.json(
+      { error: 'Редактирование таблицы категорий разрешено только администраторам' },
+      { status: 403 }
+    )
+  }
+  return null
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ table: string }> | { table: string } }
 ) {
   try {
+    const resolvedParams = await Promise.resolve(params)
+    const tableName = resolvedParams.table
+    const adminError = await requireAdminForTable(tableName)
+    if (adminError) return adminError
+
     const searchParams = request.nextUrl.searchParams
     const dbType = (searchParams.get('db') || 'local') as 'local' | 'production'
     const body = await request.json()
 
-    const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table)
+    const modelName = getModelName(tableName)
 
     // Проверяем наличие модели в Prisma Client
     const model = (prisma as any)[modelName]
@@ -110,6 +133,11 @@ export async function PUT(
   { params }: { params: Promise<{ table: string }> | { table: string } }
 ) {
   try {
+    const resolvedParams = await Promise.resolve(params)
+    const tableName = resolvedParams.table
+    const adminError = await requireAdminForTable(tableName)
+    if (adminError) return adminError
+
     const searchParams = request.nextUrl.searchParams
     const dbType = (searchParams.get('db') || 'local') as 'local' | 'production'
     const body = await request.json()
@@ -122,9 +150,8 @@ export async function PUT(
       )
     }
 
-    const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table)
+    const modelName = getModelName(tableName)
 
     // Проверяем наличие модели в Prisma Client
     const model = (prisma as any)[modelName]
@@ -154,6 +181,11 @@ export async function DELETE(
   { params }: { params: Promise<{ table: string }> | { table: string } }
 ) {
   try {
+    const resolvedParams = await Promise.resolve(params)
+    const tableName = resolvedParams.table
+    const adminError = await requireAdminForTable(tableName)
+    if (adminError) return adminError
+
     const searchParams = request.nextUrl.searchParams
     const dbType = (searchParams.get('db') || 'local') as 'local' | 'production'
     const id = searchParams.get('id')
@@ -165,9 +197,8 @@ export async function DELETE(
       )
     }
 
-    const resolvedParams = await Promise.resolve(params)
     const prisma = getPrismaClient(dbType)
-    const modelName = getModelName(resolvedParams.table)
+    const modelName = getModelName(tableName)
 
     // Проверяем наличие модели в Prisma Client
     const model = (prisma as any)[modelName]

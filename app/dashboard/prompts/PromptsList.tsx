@@ -15,13 +15,19 @@ interface Prompt {
   isFavorite: boolean
   createdAt: Date
   updatedAt: Date
-  category: { category: string } | null
+  category: { id: string; category: string } | null
   tags: { name: string }[]
   _count: { votes: number }
 }
 
+interface Category {
+  id: string
+  category: string
+}
+
 interface PromptsListProps {
   prompts: Prompt[]
+  categories: Category[]
 }
 
 type ViewMode = 'cards' | 'table'
@@ -109,13 +115,14 @@ export function PromptsList({ prompts: initialPrompts }: PromptsListProps) {
             <PromptCard
               key={prompt.id}
               prompt={prompt}
+              categories={categories}
               onDelete={handleDelete}
               isDeleting={deletingId === prompt.id}
             />
           ))}
         </div>
       ) : (
-        <PromptsTable prompts={prompts} />
+        <PromptsTable prompts={prompts} categories={categories} />
       )}
     </div>
   )
