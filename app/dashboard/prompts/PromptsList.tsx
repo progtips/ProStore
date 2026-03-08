@@ -35,7 +35,7 @@ type ViewMode = 'cards' | 'table'
 /**
  * Список промтов с переключением между карточками и таблицей
  */
-export function PromptsList({ prompts: initialPrompts }: PromptsListProps) {
+export function PromptsList({ prompts: initialPrompts, categories }: PromptsListProps) {
   const [prompts, setPrompts] = useState(initialPrompts)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
