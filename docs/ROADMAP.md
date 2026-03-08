@@ -46,44 +46,17 @@
 
 ---
 
-## 3. Картинки в промтах
+## 3. Картинки в промтах (Media Management)
 
-### Что нужно добавить
+**Подробный план:** [docs/MEDIA-MANAGEMENT-PLAN.md](./MEDIA-MANAGEMENT-PLAN.md)
 
-#### 3.1. Схема БД
-- [ ] Вариант A: поле `imageUrl` в `Prompt` (одна картинка, URL)
-- [ ] Вариант B: модель `PromptImage` (несколько картинок на промт)
+### Кратко
 
-Рекомендация: начать с **одной картинки** (`imageUrl`) для простоты.
-
-```prisma
-model Prompt {
-  // ... существующие поля
-  imageUrl String?  // URL загруженного изображения
-}
-```
-
-#### 3.2. Хранение файлов
-Варианты:
-- **Vercel Blob** — просто, подходит для Vercel
-- **Cloudinary** — бесплатный tier, CDN
-- **AWS S3** — гибко, но сложнее настройка
-- **Локально** — `public/uploads/` (не подходит для Vercel serverless)
-
-Рекомендация: **Vercel Blob** или **Cloudinary**.
-
-#### 3.3. API
-- [ ] API route `POST /api/upload` для загрузки изображения
-- [ ] В `createPrompt` / `updatePrompt`: принимать `imageUrl` или загружать файл
-- [ ] Валидация: размер (например, до 2 MB), форматы (jpg, png, webp)
-
-#### 3.4. UI
-- [ ] **CreatePromptDialog**: блок загрузки (drag-and-drop или кнопка)
-- [ ] **EditPromptDialog**: превью текущей картинки, возможность заменить/удалить
-- [ ] **PromptCard**, **HomePromptCard**, страница промта: отображение картинки (или placeholder)
-
-#### 3.5. Миграция
-- [ ] `prisma migrate dev --name add_prompt_image`
+- **Хранение:** Cloudinary
+- **Схема:** модель `Image` + поля `previewImageUrl`, `previewImageId` в Prompt
+- **API:** POST /api/images/upload, GET /api/images, DELETE /api/images/[id]
+- **UI:** ImageUploader, ImageGallery, PromptPreviewImageField
+- **Валидация:** jpeg, png, webp до 5 MB
 
 ---
 

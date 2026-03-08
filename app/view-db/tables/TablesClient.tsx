@@ -51,20 +51,22 @@ export default function TablesClient() {
             <div className="text-center py-8">Загрузка...</div>
           ) : (
             <div className="space-y-2">
-              {tables.map((table) => (
-                <div
-                  key={table}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
-                >
-                  <span className="font-medium text-gray-700">{table}</span>
-                  <button
-                    onClick={() => handleOpenTable(table)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              {tables.map((table) => {
+                return (
+                  <div
+                    key={table}
+                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
                   >
-                    Открыть
-                  </button>
-                </div>
-              ))}
+                    <span className="font-medium text-gray-700">{table}</span>
+                    <button
+                      onClick={() => handleOpenTable(table)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    >
+                      Открыть
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
