@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { getCategories } from '@/app/actions/categories'
 import { PromptsList } from '../prompts/PromptsList'
 
 /**
@@ -13,8 +14,9 @@ export default async function FavoritesPage() {
     redirect('/login?callbackUrl=/dashboard/favorites')
   }
 
+  const [prompts, categories] = await Promise.all([
   // Получаем избранные промты текущего пользователя
-  const prompts = await (prisma as any).prompt.findMany({
+  (prisma as any).prompt.findMany({
     where: {
       ownerId: session.user.id,
       isFavorite: true,
@@ -31,12 +33,14 @@ export default async function FavoritesPage() {
         },
       },
     },
-  })
+  }),
+    getCategories(),
+  ])
 
   return (
     <div className="max-w-7xl">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Избранное</h1>
-      <PromptsList prompts={prompts} />
+      <PromptsList prompts={prompts} categories={categories} />
     </div>
   )
 }
