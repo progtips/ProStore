@@ -34,6 +34,7 @@ export function getTableNames(): string[] {
     'notes',
     'categories',
     'prompts',
+    'images',
     'tags',
     'votes',
   ]
@@ -46,6 +47,7 @@ export function getModelName(tableName: string): string {
     'notes': 'note',
     'categories': 'category',
     'prompts': 'prompt',
+    'images': 'image',
     'tags': 'tag',
     'votes': 'vote',
   }

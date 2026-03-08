@@ -23,6 +23,7 @@ model User {
   sessions Session[]
   notes    Note[]
   prompts  Prompt[]
+  images   Image[]
   votes    Vote[]
   likes    Like[]
 
@@ -104,9 +105,12 @@ model Prompt {
   publishedAt DateTime?
   ownerId     String
   categoryId  String?
+  previewImageUrl String?
+  previewImageId  String?
 
   owner    User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  images   Image[]
   tags     Tag[]
   votes    Vote[]
   likes    Like[]
@@ -114,6 +118,32 @@ model Prompt {
   @@index([ownerId, updatedAt])
   @@index([visibility, createdAt])
   @@map("prompts")
+}
+
+model Image {
+  id           String   @id @default(cuid())
+  url          String
+  secureUrl    String
+  publicId     String   @unique
+  format       String?
+  bytes        Int?
+  width        Int?
+  height       Int?
+  folder       String?
+  resourceType String?
+  alt          String?
+  ownerId      String
+  promptId     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  owner  User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  prompt Prompt? @relation(fields: [promptId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId])
+  @@index([promptId])
+  @@index([createdAt])
+  @@map("images")
 }
 
 model Tag {

@@ -17,6 +17,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^5.19.0",
+    "cloudinary": "^2.9.0",
     "lucide-react": "^0.344.0",
     "next": "^14.2.0",
     "next-auth": "^5.0.0-beta.30",

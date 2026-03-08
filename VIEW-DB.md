@@ -35,6 +35,7 @@ DATABASE_URL_PRODUCTION="postgresql://..."
 - `notes` - Заметки
 - `categories` - Категории
 - `prompts` - Промты
+- `images` - Изображения (превью промтов)
 - `tags` - Метки
 - `votes` - Голоса
 
