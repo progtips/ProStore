@@ -82,6 +82,36 @@ export async function uploadImage(
 }
 
 /**
+ * Загрузка изображения по URL (для seed и импорта)
+ */
+export async function uploadImageFromUrl(
+  imageUrl: string,
+  options: UploadImageOptions = {}
+): Promise<CloudinaryUploadResult> {
+  const folder = options.subfolder
+    ? `${DEFAULT_FOLDER}/${options.subfolder}`
+    : options.folder ?? DEFAULT_FOLDER
+
+  const result = await cloudinary.uploader.upload(imageUrl, {
+    folder,
+    resource_type: 'image',
+    public_id: options.publicId,
+  })
+
+  return {
+    publicId: result.public_id,
+    secureUrl: result.secure_url,
+    url: result.url ?? result.secure_url,
+    width: result.width,
+    height: result.height,
+    format: result.format,
+    bytes: result.bytes,
+    folder: result.folder,
+    resourceType: result.resource_type,
+  }
+}
+
+/**
  * Удаление изображения из Cloudinary по publicId
  */
 export async function deleteImage(publicId: string): Promise<void> {
