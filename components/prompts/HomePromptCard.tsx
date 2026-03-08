@@ -3,12 +3,14 @@
 import Link from 'next/link'
 import { LikeButton } from '@/app/dashboard/prompts/LikeButton'
 import { Globe, Calendar } from 'lucide-react'
+import { getOptimizedImageUrl } from '@/lib/cloudinary-url'
 
 interface Prompt {
   id: string
   title: string
   content: string
   description: string | null
+  previewImageUrl?: string | null
   createdAt: Date
   owner: {
     id: string
@@ -37,6 +39,16 @@ export function HomePromptCard({ prompt, isAuthenticated }: HomePromptCardProps)
     <div className={`rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200 ${
       hasLikes ? 'bg-green-50' : 'bg-white'
     }`}>
+      {/* Превью-изображение */}
+      {prompt.previewImageUrl && (
+        <div className="mb-3 -mx-6 -mt-6">
+          <img
+            src={getOptimizedImageUrl(prompt.previewImageUrl, 'card')}
+            alt=""
+            className="w-full h-40 object-cover rounded-t-lg"
+          />
+        </div>
+      )}
       {/* Заголовок */}
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-800 flex-1 pr-2">

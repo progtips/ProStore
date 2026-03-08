@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { LikeButton } from '../prompts/LikeButton'
 import { Globe, Lock, Copy } from 'lucide-react'
+import { getOptimizedImageUrl } from '@/lib/cloudinary-url'
 import { useRouter } from 'next/navigation'
 import { togglePromptFavorite } from '@/app/actions/prompts'
 import { Toast } from '@/components/ui/Toast'
@@ -12,6 +13,7 @@ interface Prompt {
   title: string
   content: string
   description: string | null
+  previewImageUrl?: string | null
   createdAt: Date
   owner: {
     id: string
@@ -67,6 +69,16 @@ export function PublicPromptCard({
 
   return (
     <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200">
+      {/* Превью-изображение */}
+      {prompt.previewImageUrl && (
+        <div className="mb-3 -mx-6 -mt-6">
+          <img
+            src={getOptimizedImageUrl(prompt.previewImageUrl, 'card')}
+            alt=""
+            className="w-full h-40 object-cover rounded-t-lg"
+          />
+        </div>
+      )}
       {/* Заголовок */}
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-800 flex-1 pr-2">

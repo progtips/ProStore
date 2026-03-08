@@ -165,13 +165,13 @@ types/
 | 4.2 | ImageGallery | Сетка, пагинация, удаление, empty state |
 | 4.3 | PromptPreviewImageField | Текущее превью, замена, удаление |
 
-### Фаза 5: Интеграция в промты (1–2 ч)
+### Фаза 5: Интеграция в промты (1–2 ч) ✅
 
 | # | Задача | Где |
 |---|--------|-----|
 | 5.1 | CreatePromptDialog | Добавить PromptPreviewImageField |
 | 5.2 | EditPromptDialog | Добавить PromptPreviewImageField |
-| 5.3 | PromptCard, HomePromptCard | Отображение превью (getOptimizedImageUrl) |
+| 5.3 | PromptCard, HomePromptCard, PublicPromptCard | Отображение превью (getOptimizedImageUrl) |
 | 5.4 | Страница промта | Отображение превью |
 
 ### Фаза 6: Оптимизированная доставка (0.5 ч)

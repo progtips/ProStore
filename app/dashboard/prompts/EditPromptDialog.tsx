@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { updatePrompt } from '@/app/actions/prompts'
 import { useRouter } from 'next/navigation'
 import { TagsInput } from '@/components/prompts/TagsInput'
+import { PromptPreviewImageField } from '@/components/media/PromptPreviewImageField'
 
 interface Prompt {
   id: string
@@ -11,6 +12,8 @@ interface Prompt {
   content: string
   description: string | null
   isPublic: boolean
+  previewImageUrl?: string | null
+  previewImageId?: string | null
   category?: { id: string; category: string } | null
   tags?: { name: string }[]
 }
@@ -31,7 +34,15 @@ interface EditPromptDialogProps {
 export function EditPromptDialog({ prompt, categories }: EditPromptDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData] = useState({ title: '', description: '', content: '', isPublic: false, categoryId: '' })
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    content: '',
+    isPublic: false,
+    categoryId: '',
+    previewImageUrl: null as string | null,
+    previewImageId: null as string | null,
+  })
   const [tags, setTags] = useState<string[]>([])
   const router = useRouter()
 
@@ -43,6 +54,8 @@ export function EditPromptDialog({ prompt, categories }: EditPromptDialogProps) 
         content: prompt.content,
         isPublic: prompt.isPublic,
         categoryId: prompt.category?.id || '',
+        previewImageUrl: prompt.previewImageUrl ?? null,
+        previewImageId: prompt.previewImageId ?? null,
       })
       setTags(prompt.tags?.map((t) => t.name) || [])
     }
@@ -60,7 +73,9 @@ export function EditPromptDialog({ prompt, categories }: EditPromptDialogProps) 
     formDataObj.append('isPublic', formData.isPublic ? 'true' : '')
     formDataObj.append('tags', tags.join(','))
     formDataObj.append('categoryId', formData.categoryId)
-    
+    formDataObj.append('previewImageUrl', formData.previewImageUrl ?? '')
+    formDataObj.append('previewImageId', formData.previewImageId ?? '')
+
     const result = await updatePrompt(formDataObj)
 
     if (result.success) {
@@ -143,6 +158,19 @@ export function EditPromptDialog({ prompt, categories }: EditPromptDialogProps) 
                   className="w-full px-3 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
+
+              <PromptPreviewImageField
+                promptId={prompt.id}
+                initialImageUrl={formData.previewImageUrl}
+                initialImageId={formData.previewImageId}
+                onImageChange={(img) => {
+                  setFormData((p) => ({
+                    ...p,
+                    previewImageUrl: img?.secureUrl ?? null,
+                    previewImageId: img?.publicId ?? null,
+                  }))
+                }}
+              />
 
               <div>
                 <label htmlFor="edit-category" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">

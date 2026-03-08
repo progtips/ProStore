@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation'
 import { Globe, User, Calendar, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { CopyButton } from './CopyButton'
+import { getOptimizedImageUrl } from '@/lib/cloudinary'
 
 /**
  * Страница детального просмотра промта
@@ -86,6 +87,16 @@ export default async function PromptDetailPage({
 
           {/* Карточка промта */}
           <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+            {/* Превью-изображение */}
+            {prompt.previewImageUrl && prompt.previewImageId && (
+              <div className="mb-6 -mx-8 -mt-8">
+                <img
+                  src={getOptimizedImageUrl(prompt.previewImageId, 'large')}
+                  alt=""
+                  className="w-full h-64 object-cover rounded-t-lg"
+                />
+              </div>
+            )}
             {/* Заголовок и иконка публичности */}
             <div className="flex justify-between items-start mb-4">
               <h1 className="text-3xl font-bold text-gray-800 flex-1 pr-4">

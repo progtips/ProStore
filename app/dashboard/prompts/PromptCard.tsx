@@ -5,6 +5,7 @@ import { togglePromptPublic, togglePromptFavorite } from '@/app/actions/prompts'
 import { EditPromptDialog } from './EditPromptDialog'
 import { Globe, Lock, Copy } from 'lucide-react'
 import { Toast } from '@/components/ui/Toast'
+import { getOptimizedImageUrl } from '@/lib/cloudinary-url'
 
 interface Prompt {
   id: string
@@ -13,6 +14,8 @@ interface Prompt {
   description: string | null
   isPublic: boolean
   isFavorite: boolean
+  previewImageUrl?: string | null
+  previewImageId?: string | null
   createdAt: Date
   updatedAt: Date
   category: { id: string; category: string } | null
@@ -61,6 +64,16 @@ export function PromptCard({ prompt, categories, onDelete, isDeleting }: PromptC
 
   return (
     <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+      {/* Превью-изображение */}
+      {prompt.previewImageUrl && (
+        <div className="mb-3 -mx-6 -mt-6">
+          <img
+            src={getOptimizedImageUrl(prompt.previewImageUrl, 'card')}
+            alt=""
+            className="w-full h-40 object-cover rounded-t-lg"
+          />
+        </div>
+      )}
       {/* Заголовок и действия */}
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-800 flex-1 pr-2">

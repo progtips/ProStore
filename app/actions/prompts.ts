@@ -32,12 +32,17 @@ export async function createPrompt(formData: FormData) {
     const categoryIdRaw = formData.get('categoryId')
     const categoryId = categoryIdRaw && String(categoryIdRaw).trim() !== '' ? (categoryIdRaw as string) : null
 
+    const previewImageUrl = (formData.get('previewImageUrl') as string)?.trim() || null
+    const previewImageId = (formData.get('previewImageId') as string)?.trim() || null
+
     const data = {
       title: formData.get('title') as string,
       content: formData.get('content') as string,
       description: formData.get('description') as string || undefined,
       isPublic: formData.get('isPublic') === 'true',
       categoryId,
+      previewImageUrl,
+      previewImageId,
     }
 
     // Валидация
@@ -57,6 +62,8 @@ export async function createPrompt(formData: FormData) {
         ownerId: session.user.id,
         visibility: data.isPublic ? 'PUBLIC' : 'PRIVATE',
         categoryId: data.categoryId || null,
+        previewImageUrl: data.previewImageUrl || null,
+        previewImageId: data.previewImageId || null,
         tags: {
           connectOrCreate: tagNames.map((name: string) => ({
             where: { name },
@@ -65,6 +72,16 @@ export async function createPrompt(formData: FormData) {
         },
       },
     })
+
+    if (data.previewImageId) {
+      await prisma.image.updateMany({
+        where: {
+          publicId: data.previewImageId,
+          ownerId: session.user.id,
+        },
+        data: { promptId: prompt.id },
+      })
+    }
 
     revalidatePath('/dashboard/prompts')
     return { success: true, prompt }
@@ -118,6 +135,14 @@ export async function updatePrompt(formData: FormData) {
       const categoryIdRaw = formData.get('categoryId')
       data.categoryId = categoryIdRaw && String(categoryIdRaw).trim() !== '' ? (categoryIdRaw as string) : null
     }
+    if (formData.has('previewImageUrl')) {
+      const v = formData.get('previewImageUrl') as string
+      data.previewImageUrl = v?.trim() || null
+    }
+    if (formData.has('previewImageId')) {
+      const v = formData.get('previewImageId') as string
+      data.previewImageId = v?.trim() || null
+    }
 
     // Валидация
     if (data.title && data.title.trim().length === 0) {
@@ -140,6 +165,12 @@ export async function updatePrompt(formData: FormData) {
     }
     if (data.hasOwnProperty('categoryId')) {
       updateData.categoryId = data.categoryId
+    }
+    if (data.hasOwnProperty('previewImageUrl')) {
+      updateData.previewImageUrl = data.previewImageUrl
+    }
+    if (data.hasOwnProperty('previewImageId')) {
+      updateData.previewImageId = data.previewImageId
     }
 
     // Обновление тегов: заменяем связь полностью

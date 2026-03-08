@@ -4,6 +4,8 @@ import { useState, useTransition, useEffect } from 'react'
 import { createPrompt } from '@/app/actions/prompts'
 import { useRouter } from 'next/navigation'
 import { TagsInput } from '@/components/prompts/TagsInput'
+import { PromptPreviewImageField } from '@/components/media/PromptPreviewImageField'
+import type { UploadedImage } from '@/types/image'
 
 interface Category {
   id: string
@@ -22,6 +24,7 @@ export function CreatePromptDialog({ categories }: CreatePromptDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [categoryId, setCategoryId] = useState<string>('')
+  const [previewImage, setPreviewImage] = useState<UploadedImage | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
@@ -29,6 +32,7 @@ export function CreatePromptDialog({ categories }: CreatePromptDialogProps) {
     if (isOpen) {
       setTags([])
       setCategoryId('')
+      setPreviewImage(null)
     }
   }, [isOpen])
 
@@ -39,7 +43,10 @@ export function CreatePromptDialog({ categories }: CreatePromptDialogProps) {
     const form = e.currentTarget
     const formData = new FormData(form)
     if (categoryId) formData.set('categoryId', categoryId)
-    // Теги передаются через TagsInput (hidden input name="tags")
+    if (previewImage) {
+      formData.set('previewImageUrl', previewImage.secureUrl)
+      formData.set('previewImageId', previewImage.publicId)
+    }
     const result = await createPrompt(formData)
 
     if (result.success) {
@@ -123,6 +130,10 @@ export function CreatePromptDialog({ categories }: CreatePromptDialogProps) {
                   placeholder="Введите содержимое промта"
                 />
               </div>
+
+              <PromptPreviewImageField
+                onImageChange={setPreviewImage}
+              />
 
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
