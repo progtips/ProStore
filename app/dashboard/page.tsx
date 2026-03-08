@@ -24,7 +24,6 @@ export default async function DashboardPage() {
               {session.user.name && (
                 <p><span className="font-medium">Имя:</span> {session.user.name}</p>
               )}
-              <p><span className="font-medium">ID:</span> {session.user.id}</p>
             </div>
           </div>
         </div>
