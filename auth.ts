@@ -18,6 +18,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, user }) {
       if (session.user && user) {
         session.user.id = user.id
+        const role = (user as { role?: 'user' | 'admin' }).role
+        session.user.role = role === 'admin' ? 'admin' : 'user'
       }
       return session
     },
